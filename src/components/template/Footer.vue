@@ -69,7 +69,8 @@
             <span class="relative group my-1">
                 <font-awesome-icon class="transition-opacity group-hover:opacity-0 mr-2" icon="caret-right" />
                 <font-awesome-icon class="absolute opacity-0 left-0 top-1 transition-opacity group-hover:opacity-100"
-                    icon="angles-right" /> Return Policy
+                    icon="angles-right" /> Rexit
+                turn Policy
             </span>
         </div>
     </footer>
@@ -77,7 +78,6 @@
 </template>
 
 <script>
-
 export default {
     name: "pageFooter",
 }

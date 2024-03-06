@@ -20,6 +20,9 @@
         </nav>
         <div class="col-span-5 mx-5 my-7">
             <img class="rounded-xl" alt="fone" src="@/assets/images/fone.jpg">
+            <ul>
+                <li v-for="product in products" :key="product.name">{{ product.name }}</li>
+            </ul>
         </div>
         <div class="col-span-4 mx-5 my-7 flex flex-col items-center gap-2">
             <img class="w-4/5 rounded-xl" alt="tenis_1" src="@/assets/images/tenis1.jpg">
@@ -27,11 +30,37 @@
         </div>
     </div>
 </template>
+
 <script>
+
+import axios from 'axios'
+
+const baseApiUrl = process.env.VUE_APP_API_URL;
+
 export default {
-    name: "pageContent"
+    name: "pageContent",
+    data() {
+        return {
+            products: []
+        }
+    },
+    methods: {
+        getProducts() {
+            axios
+                .get(`${baseApiUrl}/products`)
+                .then(resp => this.products = resp.data.data)
+                .catch(err => console.log(`${err.response
+                    ? err.response.data.msg
+                    : "Erro no contato com o backend, tente novamente."
+                    }`))
+        }
+    },
+    mounted() {
+        this.getProducts()
+    }
 }
 </script>
+
 <style>
 .content hr {
     margin: 10px 0;

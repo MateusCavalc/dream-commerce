@@ -18,7 +18,7 @@ export default {
     pageContent,
     pageFeatures,
     pageFooter
-  },
+  }
 };
 </script>
 

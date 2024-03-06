@@ -12,8 +12,13 @@
       <div class="logo flex-2 p-4 text-5xl">
         <strong class="text-[#495057] text-6xl">Dream</strong>Commerce
       </div>
-      <div class="search flex-1 flex justify-center p-3">
-        <input type="text" placeholder="Search" class="w-full border border-solid border-[#6C757D] rounded-lg p-2">
+      <div class="search flex-1 flex items-center p-3 relative">
+        <input type="text" placeholder="Search"
+          class="w-full border border-solid border-[#6C757D] rounded-lg py-2 px-3 outline-none">
+        <a
+          class="h-[40px] w-[52px] cursor-pointer flex justify-center items-center absolute right-[13px] hover:bg-[#E9ECEF]">
+          <font-awesome-icon icon="magnifying-glass" />
+        </a>
       </div>
       <div class="header-buttons flex justify-center gap-4">
         <button class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
@@ -23,7 +28,6 @@
           My Cart
         </button>
       </div>
-
     </div>
   </header>
 </template>
@@ -47,5 +51,14 @@ export default {
 
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
+}
+
+.header .search a:hover {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.header .search svg {
+  height: 20px;
 }
 </style>

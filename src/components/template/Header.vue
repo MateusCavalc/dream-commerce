@@ -21,10 +21,12 @@
         </a>
       </div>
       <div class="header-buttons flex justify-center gap-4">
-        <button class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
-          Login
-        </button>
-        <button class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
+        <router-link v-if="!userLogged" to="/signin">
+          <button class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
+            Login
+          </button>
+        </router-link>
+        <button v-else class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
           My Cart
         </button>
       </div>
@@ -35,6 +37,9 @@
 <script>
 export default {
   name: "pageHeader",
+  props: {
+    userLogged: Boolean
+  }
 };
 </script>
 

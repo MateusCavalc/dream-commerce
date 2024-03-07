@@ -1,24 +1,11 @@
 <template>
-  <page-header></page-header>
-  <page-content></page-content>
-  <page-features></page-features>
-  <page-footer></page-footer>
+  <router-view></router-view>
 </template>
 
 <script>
-import pageHeader from "@/components/template/Header.vue";
-import pageContent from "@/components/template/Content.vue";
-import pageFeatures from "@/components/template/Features.vue"
-import pageFooter from "@/components/template/Footer.vue"
 
 export default {
   name: "App",
-  components: {
-    pageHeader,
-    pageContent,
-    pageFeatures,
-    pageFooter
-  }
 };
 </script>
 

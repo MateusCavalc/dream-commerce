@@ -1,33 +1,18 @@
 <template>
     <div class="h-fit content grid grid-cols-8 bg-[#E9ECEF]">
         <nav class="col-span-2 bg-[#DEE2E6] m-7 p-3 flex flex-col border border-[#6C757D] rounded-xl">
-            <a class="nav-link">Home</a>
+            <a class="nav-link">Tech</a>
             <hr>
-            <a class="nav-link">Best Selling</a>
+            <a class="nav-link">Apparel</a>
             <hr>
-            <a class="nav-link">New Arrivals</a>
+            <a class="nav-link">Sports</a>
             <hr>
-            <a class="nav-link">Fashion & Beauty</a>
+            <a class="nav-link">Food & Drinks</a>
             <hr>
-            <a class="nav-link">Kids & Babies Clothes</a>
+            <a class="nav-link">Music</a>
             <hr>
-            <a class="nav-link">Men & Women Clothes</a>
-            <hr>
-            <a class="nav-link">Gadgets & Accessories</a>
-            <hr>
-            <a class="nav-link">Electronics & Accessories</a>
-            <hr>
+            <a class="nav-link">House & Decoration</a>
         </nav>
-        <!-- <div class="col-span-6 flex flex-wrap justify-items-stretch gap-4 mx-auto my-7">
-            <div v-for="product in products" :key="product.name"
-                class="flex flex-col items-center h-fit border border-[#DEE2E6] rounded-xl shadow-lg bg-[#E9ECEF] overflow-hidden">
-                <img class="w-full md:w-48 lg:w-72" :src="`http://localhost:4000/${product.image}`" :alt="product.name">
-                <div class="product-info w-full px-2 py-1 flex justify-between">
-                    <span class="text-lg ml-2">{{ product.name }}</span>
-                    <strong class="text-xl">{{ product.price ?? 'Free' }}</strong>
-                </div>
-            </div>
-        </div> -->
         <section
             class="col-span-6 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-4 my-7 mr-7">
             <!--   ✅ Product card 1 - Starts Here 👇 -->
@@ -59,16 +44,20 @@
             <!--   🛑 Product card 1 - Ends Here  -->
         </section>
     </div>
+    <page-features></page-features>
 </template>
 
 <script>
-
+import PageFeatures from '@/components/template/Features.vue'
 import axios from 'axios'
 
 const baseApiUrl = process.env.VUE_APP_API_URL;
 
 export default {
     name: "pageContent",
+    components: {
+        PageFeatures
+    },
     data() {
         return {
             products: []

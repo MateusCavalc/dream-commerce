@@ -26,9 +26,11 @@
             Login
           </button>
         </router-link>
-        <button v-else class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
-          My Cart
-        </button>
+        <router-link v-else to="/account">
+          <button class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
+            My Account
+          </button>
+        </router-link>
       </div>
     </div>
   </header>

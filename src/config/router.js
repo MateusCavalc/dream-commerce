@@ -3,17 +3,26 @@ import {
     , createWebHistory
 } from 'vue-router'
 
-import frontPage from '@/components/pages/FrontPage.vue'
-import signIn from '@/components/pages/SignIn.vue'
+import frontPage from '@/components/pages/FrontPage/FrontPage.vue'
+import signInPage from '@/components/pages/SignInPage.vue'
+import pageContent from '@/components/template/Content.vue'
+import accountContent from '@/components/pages/FrontPage/AccountContent/AccountContent.vue'
 
 const routes = [{
     name: 'signin',
     path: '/signin',
-    component: signIn
+    component: signInPage
 }, {
     name: 'home',
     path: '/',
-    component: frontPage
+    component: frontPage,
+    children: [{
+        path: '',
+        component: pageContent
+    }, {
+        path: 'account',
+        component: accountContent
+    }]
 }]
 
 const router = createRouter({

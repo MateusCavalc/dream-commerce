@@ -1,12 +1,12 @@
 <template>
   <header class="header grid grid-cols-1">
-    <nav class="nav bg-[#495057] text-[#b5daff] flex gap-8 px-16 text-lg">
-      <a>Home</a>
-      <a>Products</a>
-      <a>Cart</a>
-      <a>Checkout</a>
-      <a>My Account</a>
-      <a>About Us</a>
+    <nav class="bg-[#495057] text-[#b5daff] flex gap-8 px-16 text-lg">
+      <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">Home</a>
+      <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">Products</a>
+      <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">Cart</a>
+      <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">Checkout</a>
+      <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">My Account</a>
+      <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">About Us</a>
     </nav>
     <div class="flex items-center bg-[#DEE2E6] text-[#6C757D] px-10">
       <div class="logo flex-2 p-4 text-5xl">
@@ -22,12 +22,14 @@
       </div>
       <div class="header-buttons flex justify-center gap-4">
         <router-link v-if="!userLogged" to="/signin">
-          <button class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
+          <button
+            class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-solid border-[#6C757D] rounded">
             Login
           </button>
         </router-link>
         <router-link v-else to="/account">
-          <button class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-[#6C757D] rounded">
+          <button
+            class="bg-[#E9ECEF] hover:bg-[#CED4DA] font-bold py-2 px-4 border border-solid border-[#6C757D] rounded">
             My Account
           </button>
         </router-link>
@@ -53,9 +55,6 @@ export default {
 }
 
 .header nav a:hover {
-  background-color: #DEE2E6;
-  color: #343A40;
-
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }

@@ -8,6 +8,10 @@
             <h1 class="text-4xl font-semibold">{{ isSignIn ? "Welcome back." : "Welcome." }}</h1>
         </div>
         <div class="w-10/12 sm:w-8/12 mb-6">
+            <div v-if="errorMsg != null" class="text-white bg-[#f44336] mb-3 p-2 rounded">
+                <span>{{ errorMsg }}</span>
+            </div>
+
             <input
                 class="mb-4 p-2 appearance-none block w-full bg-[#E9ECEF] placeholder-[#343A40] rounded border outline-none"
                 v-if="!isSignIn" type="text" v-model="user.name" placeholder="Name" />
@@ -20,6 +24,7 @@
             <input
                 class="mb-4 p-2 appearance-none block w-full bg-[#E9ECEF] placeholder-[#343A40] rounded border outline-none"
                 v-if="!isSignIn" type="password" v-model="user.passwordConfirmation" placeholder="Confirm Password" />
+
             <div class="flex items-center">
                 <a class="ml-4 cursor-pointer hover:underline" @click.prevent="isSignIn = !isSignIn">
                     <span v-if="isSignIn">Register</span>
@@ -37,13 +42,15 @@
 import axios from "axios";
 
 const baseApiUrl = process.env.VUE_APP_API_URL;
+const userKey = process.env.VUE_APP_USER_LOCAL_STORAGE;
 
 export default {
     name: "signIn",
     data() {
         return {
             isSignIn: true,
-            user: {}
+            user: {},
+            errorMsg: null
         }
     },
     methods: {
@@ -57,18 +64,13 @@ export default {
                     };
                     // chama a funcao da store para setar o usuario da sessao
                     this.$store.commit("setUser", user);
-                    // // salvar o usuario no localStorage para guardar a sessao no browser
-                    // localStorage.setItem(userKey, JSON.stringify(user));
-                    // toast.success("Login efetuado com sucesso");
+                    // salvar o usuario no localStorage para guardar a sessao no browser
+                    localStorage.setItem(userKey, JSON.stringify(user));
 
                     this.$router.push({ path: "/" });
                 })
                 .catch((err) =>
-                    // toast.error(
-                    //     `${err.response.data.msg ?? "Não foi possível realizar o login, tente novamente."
-                    //     }`
-                    // )
-                    console.log(`${err.response.data.msg ?? "Não foi possível realizar o login, tente novamente."}`)
+                    this.errorMsg = err.response.data.msg ?? "Não foi possível realizar o login, tente novamente."
                 );
         },
         signUp() {

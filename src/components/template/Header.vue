@@ -9,9 +9,11 @@
       <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">About Us</a>
     </nav>
     <div class="flex items-center bg-[#DEE2E6] text-[#6C757D] px-10">
-      <div class="logo flex-2 p-4 text-5xl">
-        <strong class="text-[#495057] text-6xl">Dream</strong>Commerce
-      </div>
+      <router-link to="/">
+        <div class="flex-2 p-4 text-5xl">
+          <strong class="text-[#495057] text-6xl">Dream</strong>Commerce
+        </div>
+      </router-link>
       <div class="search flex-1 flex items-center p-3 relative">
         <input type="text" placeholder="Search"
           class="w-full border border-solid border-[#6C757D] rounded-lg py-2 px-3 outline-none">

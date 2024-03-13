@@ -25,7 +25,7 @@
                         <span class="text-gray-400 mr-3 uppercase text-xs">Brand</span>
                         <p class="text-lg font-bold text-black truncate block capitalize">{{ product.name }}</p>
                         <div class="flex items-center">
-                            <p class="text-lg font-semibold text-black cursor-auto my-3">{{ product.price ?? 'Free' }}
+                            <p class="text-lg font-semibold text-black cursor-auto my-3">{{ product.price }}
                             </p>
                             <del>
                                 <p class="text-sm text-gray-600 cursor-auto ml-2">$199</p>
@@ -50,6 +50,7 @@
 <script>
 import PageFeatures from '@/components/template/Features.vue'
 import axios from 'axios'
+import currencyParser from '@/utils/currencyParser';
 
 const baseApiUrl = process.env.VUE_APP_API_URL;
 
@@ -67,7 +68,13 @@ export default {
         getProducts() {
             axios
                 .get(`${baseApiUrl}/products`)
-                .then(resp => this.products = resp.data.data)
+                .then(resp => {
+                    this.products = resp.data.data.map(product => {
+                        const parsedProduct = { ...product }
+                        parsedProduct.price = product.price ? currencyParser(parsedProduct.price) : 'Free'
+                        return parsedProduct
+                    })
+                })
                 .catch(err => console.log(`${err.response
                     ? err.response.data.msg
                     : "Erro no contato com o backend, tente novamente."

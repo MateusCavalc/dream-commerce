@@ -16,7 +16,7 @@
                                 </div>
                                 <input type="text" id="table-search"
                                     class="mr-3 p-2 ps-8 text-sm text-gray-900 outline-none border border-gray-300 rounded-lg w-80 bg-gray-50 focus:border-[#6C757D]"
-                                    placeholder="Search for users">
+                                    placeholder="Search for products">
                             </div>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                                     Image
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Owner_id
+                                    Owner
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Action
@@ -53,7 +53,7 @@
                                 <td class="px-6 py-4">
                                     <div class="text-base">{{ product.name }}</div>
                                 </td>
-                                <td class="px-6 py-4">{{ `R$ ${product.price}` }}</td>
+                                <td class="px-6 py-4">{{ parseMoneyValue(product.price) }}</td>
                                 <td class="px-6 py-4 truncate"> {{ product.image }}</td>
                                 <td class="px-6 py-4"> {{ product.owner.name }}
                                 </td>
@@ -108,19 +108,12 @@
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                                                 v-model="productModal.price">
                                         </div>
-                                        <div v-if="modal === 'save'" class="col-span-6 sm:col-span-3">
+                                        <div class="col-span-6 sm:col-span-3">
                                             <label for="image"
                                                 class="block ml-1 mb-2 text-sm font-medium text-gray-900">Image</label>
                                             <input type="file" accept="image/*" name="image" id="image"
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                                                 @change="loadImage" />
-                                        </div>
-                                        <div v-else-if="modal === 'update'" class="col-span-6 sm:col-span-3">
-                                            <label for="image"
-                                                class="block ml-1 mb-2 text-sm font-medium text-gray-900">Image</label>
-                                            <input type="text" name="image" id="image"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                                                v-model="productModal.image">
                                         </div>
                                         <div class="col-span-6 sm:col-span-3">
                                             <label for="owner"
@@ -169,7 +162,7 @@
                                 <!-- Modal body -->
                                 <div class="p-6 space-y-6">
                                     <div class="grid grid-cols-6 gap-6">
-                                        <input id="productModal-id" type="hidden" v-model="productModal.id" />
+                                        <input id="productModal-id" type="hidden" v-model="productModal._id" />
                                         <div class="col-span-6 sm:col-span-3">
                                             <label for="name"
                                                 class="block ml-1 mb-2 text-sm font-medium text-gray-900">Name</label>
@@ -217,6 +210,8 @@
     </div>
 </template>
 <script>
+import currencyParser from '@/utils/currencyParser'
+
 const axios = require('axios')
 const FormData = require('form-data')
 
@@ -275,9 +270,14 @@ export default {
             this.productModal.image = e.target.files[0]
         },
         updateModalProduct() {
-            axios.put(`${baseApiUrl}/products/${this.productModal.id}`, {
-                name: this.productModal.name,
-            })
+            const formData = new FormData()
+
+            formData.append('name', this.productModal.name)
+            formData.append('price', this.productModal.price)
+            formData.append('image', this.productModal.image)
+            formData.append('ownerId', this.productModal.owner.id)
+
+            axios.put(`${baseApiUrl}/products/${this.productModal._id}`, formData)
                 .then(() => {
                     this.loadProducts()
                     this.showSaveModal = false
@@ -296,9 +296,12 @@ export default {
             axios.get(`${baseApiUrl}/users/names`)
                 .then(resp => this.users = resp.data.data)
                 .catch(() => { })
+        },
+        parseMoneyValue(value) {
+            return currencyParser(value)
         }
     },
-    mounted() {
+    created() {
         this.getUsers()
         this.loadProducts()
     }

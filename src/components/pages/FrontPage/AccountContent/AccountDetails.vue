@@ -4,12 +4,12 @@
             <div class="grid grid-cols-2 gap-10">
                 <div>
                     <h1 class="text-xl font-semibold text-gray-700 mb-2">Account Details</h1>
-                    <input id="user-id" type="hidden" v-model="user.id" />
+                    <input id="user-id" type="hidden" v-model="localUser.id" />
 
                     <label for="name" class="block ml-2 mb-1">Name</label>
-                    <input type="text" id="name" class="w-full rounded-lg border py-2 px-3" v-model="user.name">
+                    <input type="text" id="name" class="w-full rounded-lg border py-2 px-3" v-model="localUser.name">
                     <label for="email" class="block ml-2 mb-1 mt-4">E-mail</label>
-                    <input type="text" id="email" class="w-full rounded-lg border py-2 px-3" v-model="user.email">
+                    <input type="text" id="email" class="w-full rounded-lg border py-2 px-3" v-model="localUser.email">
 
                     <div class="mt-4 flex justify-end items-center">
                         <font-awesome-icon v-show="showUpdateStatus" class="h-6 mr-2 px-2 py-1 shadow-md rounded-xl"
@@ -49,9 +49,10 @@ const userKey = process.env.VUE_APP_USER_LOCAL_STORAGE;
 
 export default {
     name: 'accountDetails',
+    props: ['user'],
     data() {
         return {
-            user: {},
+            localUser: { ...this.user },
             newPassword: '',
             newPasswordConfirmation: '',
             showUpdateStatus: false,
@@ -60,22 +61,15 @@ export default {
             updatePswdSuccess: false
         }
     },
-    mounted() {
-        if (!this.$store.state.user) {
-            this.$router.push('/signin')
-        }
-
-        this.user = this.$store.state.user ?? {}
-    },
     methods: {
         save() {
-            axios.put(`${baseApiUrl}/users/${this.user.id}`, {
-                name: this.user.name,
-                email: this.user.email,
+            axios.put(`${baseApiUrl}/users/${this.localUser.id}`, {
+                name: this.localUser.name,
+                email: this.localUser.email,
             })
                 .then(() => {
-                    this.$store.commit("setUser", this.user);
-                    localStorage.setItem(userKey, JSON.stringify(this.user));
+                    this.$store.commit("setUser", this.localUser);
+                    localStorage.setItem(userKey, JSON.stringify(this.localUser));
                     this.updateSuccess = true
                 })
                 .catch(() => this.updateSuccess = false)
@@ -85,7 +79,7 @@ export default {
                 })
         },
         updatePassword() {
-            axios.put(`${baseApiUrl}/users/pswd/${this.user.id}`, {
+            axios.put(`${baseApiUrl}/users/pswd/${this.localUser.id}`, {
                 password: this.newPassword,
                 passwordConfirmation: this.newPasswordConfirmation,
             })
@@ -99,7 +93,7 @@ export default {
                     this.showUpdatePswdStatus = true
                     setTimeout(() => this.showUpdatePswdStatus = false, 2000)
                 })
-        }
+        },
     }
 }
 </script>

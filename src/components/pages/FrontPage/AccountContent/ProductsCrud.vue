@@ -211,8 +211,8 @@
 </template>
 <script>
 import currencyParser from '@/utils/currencyParser'
+import axios from 'axios'
 
-const axios = require('axios')
 const FormData = require('form-data')
 
 const baseApiUrl = process.env.VUE_APP_API_URL;

@@ -167,7 +167,7 @@
     </div>
 </template>
 <script>
-const axios = require('axios')
+import axios from 'axios'
 
 const baseApiUrl = process.env.VUE_APP_API_URL;
 

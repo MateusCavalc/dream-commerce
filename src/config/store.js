@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-// import axios from 'axios'
+import axios from 'axios'
 
 // Vuex para criação de "global state" da aplicação
 export default createStore({
@@ -12,13 +12,11 @@ export default createStore({
     mutations: {
         setUser(state, user) {
             state.user = user
-            // if (user) {
-            //     axios.defaults.headers.common['Authorization'] = `bearer ${user.token}`
-            //     state.menuVisible = true
-            // } else {
-            //     delete axios.defaults.headers.common['Authorization']
-            //     state.menuVisible = false
-            // }
+            if (user) {
+                axios.defaults.headers.common['Authorization'] = `bearer ${user.token}`
+            } else {
+                delete axios.defaults.headers.common['Authorization']
+            }
         }
     }
 })

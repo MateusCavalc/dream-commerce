@@ -9,6 +9,8 @@ import addIcons from '@/config/icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import '@/config/interceptors'
+
 addIcons()
 
 const app = createApp(App)

@@ -2,10 +2,8 @@
   <header class="header grid grid-cols-1">
     <nav class="bg-[#495057] text-[#b5daff] flex gap-8 px-16 text-lg">
       <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">Home</a>
-      <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">Products</a>
       <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">Cart</a>
       <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">Checkout</a>
-      <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">My Account</a>
       <a class="hover:bg-[#DEE2E6] hover:text-[#343A40]">About Us</a>
     </nav>
     <div class="flex items-center bg-[#DEE2E6] text-[#6C757D] px-10">

@@ -68,7 +68,6 @@ export default {
             axios
                 .post(`${baseApiUrl}/signin`, this.user)
                 .then((resp) => {
-                    console.log('feito')
                     const user = {
                         ...resp.data.data.payload,
                         token: resp.data.data.token,

@@ -34,6 +34,9 @@
                                     Price
                                 </th>
                                 <th scope="col" class="px-6 py-3">
+                                    Categories
+                                </th>
+                                <th scope="col" class="px-6 py-3">
                                     Image
                                 </th>
                                 <th scope="col" class="px-6 py-3">
@@ -45,6 +48,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <!-- Table Rows Iteration -->
                             <tr v-for="product in products" :key="product.id"
                                 class="bg-white border-b hover:bg-gray-100">
                                 <td class="px-6 py-4">
@@ -54,11 +58,12 @@
                                     <div class="text-base">{{ product.name }}</div>
                                 </td>
                                 <td class="px-6 py-4">{{ parseMoneyValue(product.price) }}</td>
+                                <td class="px-6 py-4 text-wrap">{{ product.categories.join(', ') }}</td>
                                 <td class="px-6 py-4 truncate"> {{ product.image }}</td>
                                 <td class="px-6 py-4"> {{ product.owner.name }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <!-- Modal toggle -->
+                                    <!-- Modal toggle (Table icons) -->
                                     <a class="cursor-pointer" @click.prevent="loadModal('update', { ...product })">
                                         <font-awesome-icon class="h-5" icon="fa-regular fa-pen-to-square" />
                                     </a>
@@ -108,6 +113,14 @@
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                                                 v-model="productModal.price">
                                         </div>
+                                        <!-- Select -->
+                                        <div class="col-span-6 sm:col-span-3">
+                                            <label for="categories"
+                                                class="block ml-1 mb-2 text-sm font-medium text-gray-900">Categories</label>
+                                            <multi-select :selectedCategories="productModal.categories"
+                                                @update:selectedCategories="productModal.categories = $event"
+                                                :categories="['tech', 'apparel', 'sports', 'food', 'music', 'house']"></multi-select>
+                                        </div>
                                         <div class="col-span-6 sm:col-span-3">
                                             <label for="image"
                                                 class="block ml-1 mb-2 text-sm font-medium text-gray-900">Image</label>
@@ -122,8 +135,8 @@
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
                                                 <option v-if="modal === 'save'" :value="undefined" disabled>Select a
                                                     owner</option>
-                                                <option v-for="user in users" :key="user.id" :value="user.id">
-                                                    {{ user.name }}
+                                                <option v-for="user in users.entries()" :key="user[0]" :value="user[0]">
+                                                    {{ user[1] }}
                                                 </option>
                                             </select>
                                         </div>
@@ -213,32 +226,41 @@
 import currencyParser from '@/utils/currencyParser'
 import axios from 'axios'
 
+import MultiSelect from './MultiSelect.vue'
+
 const FormData = require('form-data')
 
 const baseApiUrl = process.env.VUE_APP_API_URL;
 
 export default {
     name: 'productsCrud',
+    components: { MultiSelect },
     data() {
         return {
             productModal: {},
             products: [],
-            users: [],
+            users: new Map(),
             modal: '',
             showSaveModal: false,
-            showDeleteModal: false
+            showDeleteModal: false,
         }
     },
     methods: {
         loadProducts() {
             axios.get(`${baseApiUrl}/products`)
                 .then(resp => {
+                    // parse product
                     this.products = resp.data.data.map(product => {
-                        const productWithOwner = { ...product }
-                        productWithOwner.owner = { ...this.users.filter(user => user.id == product.ownerId)[0] }
-                        delete productWithOwner.ownerId
+                        const parsedProduct = { ...product }
 
-                        return productWithOwner
+                        parsedProduct.owner = {
+                            id: parseInt(parsedProduct.ownerId),
+                            name: this.users.get(parseInt(parsedProduct.ownerId))
+                        }
+
+                        delete parsedProduct.ownerId
+
+                        return parsedProduct
                     })
                 })
                 .catch(() => { })
@@ -246,6 +268,9 @@ export default {
         loadModal(modal, product = {}) {
             this.modal = modal
             this.productModal = product
+            this.productModal.owner = this.productModal.owner ?? {}
+            this.productModal.categories = this.productModal.categories ?
+                [...this.productModal.categories] : []
 
             this.modal === "save" || this.modal === "update" ?
                 this.showSaveModal = true :
@@ -256,6 +281,7 @@ export default {
 
             formData.append('name', this.productModal.name)
             formData.append('price', this.productModal.price)
+            formData.append('categories', Object.values(this.productModal.categories))
             formData.append('image', this.productModal.image)
             formData.append('ownerId', this.productModal.owner.id)
 
@@ -274,6 +300,7 @@ export default {
 
             formData.append('name', this.productModal.name)
             formData.append('price', this.productModal.price)
+            formData.append('categories', Object.values(this.productModal.categories))
             formData.append('image', this.productModal.image)
             formData.append('ownerId', this.productModal.owner.id)
 
@@ -294,7 +321,13 @@ export default {
         },
         getUsers() {
             axios.get(`${baseApiUrl}/users/names`)
-                .then(resp => this.users = resp.data.data)
+                .then(resp => {
+                    this.users = resp.data.data.reduce((mapAcc, user) => {
+                        mapAcc.set(parseInt(user.id), user.name)
+                        return mapAcc
+                    }, this.users)
+                    this.loadProducts()
+                })
                 .catch(() => { })
         },
         parseMoneyValue(value) {
@@ -303,7 +336,6 @@ export default {
     },
     created() {
         this.getUsers()
-        this.loadProducts()
     }
 }
 </script>

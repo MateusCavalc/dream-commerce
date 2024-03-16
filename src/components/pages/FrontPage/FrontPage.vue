@@ -1,8 +1,10 @@
 <template>
-    <page-header :userLogged="user !== null"></page-header>
-    <Loading v-if="validatingToken" />
-    <router-view v-if="userLoaded"></router-view>
-    <page-footer></page-footer>
+    <div class="front-page">
+        <page-header :userLogged="user !== null"></page-header>
+        <Loading v-if="validatingToken" />
+        <router-view v-if="userLoaded"></router-view>
+        <page-footer></page-footer>
+    </div>
 </template>
 
 <script>
@@ -47,7 +49,7 @@ export default {
 
         },
     },
-    async mounted() {
+    async created() {
         // console.log(`[FrontPage checking user] - ${this.$route.path}`)
 
         // if no state user
@@ -80,4 +82,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+#app .front-page {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 140px 750px 340px;
+}
+</style>

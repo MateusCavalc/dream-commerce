@@ -1,5 +1,5 @@
 <template>
-    <div class="h-fit content grid grid-cols-8 bg-[#E9ECEF]">
+    <div class="h-full content grid grid-cols-8 bg-[#E9ECEF]">
         <nav class="col-span-2 h-fit w-60 m-7 p-3 flex flex-col bg-[#DEE2E6] border border-[#6C757D] rounded-xl">
             <content-nav-item :active="navActiveItems.has('tech')" @click="clickNavItem('tech')" label="Tech"
                 :translateAmount="6.5" icon="fa-solid fa-microchip"></content-nav-item>
@@ -19,8 +19,9 @@
             <content-nav-item :active="navActiveItems.has('house')" @click="clickNavItem('house')" label="House"
                 :translateAmount="5.6" icon="fa-solid fa-house"></content-nav-item>
         </nav>
-        <section
-            class="col-span-6 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-4 my-7 mr-7">
+        <Loading v-if="loadingProducts" class="col-span-6" />
+        <section v-else
+            class="col-span-6 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-4 mt-7 mb-3 mr-7">
             <!-- Product card -->
             <div v-for="product in products" :key="product.name"
                 class="h-fit bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
@@ -39,6 +40,15 @@
             </div>
             <!-- Product card -->
         </section>
+        <!-- Pagination start  -->
+        <div class="col-span-8 flex justify-center items-end mb-3 mr-10 gap-4 text-2xl">
+            <font-awesome-icon v-show="this.currPage > 1" icon="fa-solid fa-caret-left"
+                class="h-8 cursor-pointer duration-300 hover:scale-150" @click="getPreviousPage" />
+            <div class="select-none">{{ `${this.currPage} of ${this.pages}` }}</div>
+            <font-awesome-icon v-show="this.currPage < this.pages" icon="fa-solid fa-caret-right"
+                class="h-8 cursor-pointer duration-300 hover:scale-150" @click="getNextPage" />
+        </div>
+        <!-- Pagination end -->
     </div>
     <page-features></page-features>
 </template>
@@ -46,6 +56,8 @@
 <script>
 import PageFeatures from '@/components/template/Features.vue'
 import ContentNavItem from './ContentNavItem.vue';
+import Loading from '@/components/template/LoadingValidation.vue'
+
 import axios from 'axios'
 import currencyParser from '@/utils/currencyParser';
 
@@ -55,24 +67,35 @@ export default {
     name: "pageContent",
     components: {
         PageFeatures,
-        ContentNavItem
+        ContentNavItem,
+        Loading
     },
     data() {
         return {
             products: [],
             users: new Map(),
-            navActiveItems: new Set()
+            navActiveItems: new Set(),
+            loadingProducts: false,
+
+            currPage: 1,
+            total: 0,
+            pages: 1
         }
     },
     methods: {
         getProducts() {
+            this.loadingProducts = true
+
             axios.get(`${baseApiUrl}/products`, {
                 params: {
+                    // Default perPage in front page is 6
+                    perPage: 6,
+                    page: this.currPage,
                     filter: [...this.navActiveItems].join(',')
                 }
             })
                 .then(resp => {
-                    this.products = resp.data.data.map(product => {
+                    this.products = resp.data.data.products.map(product => {
                         const parsedProduct = { ...product }
                         parsedProduct.price = product.price ? currencyParser(parsedProduct.price) : 'Free'
                         parsedProduct.ownerName = this.users.get(parseInt(parsedProduct.ownerId))
@@ -80,6 +103,12 @@ export default {
 
                         return parsedProduct
                     })
+
+                    this.total = resp.data.data.total
+                    this.currPage = resp.data.data.page
+                    this.pages = Math.ceil(this.total / resp.data.data.perPage)
+
+                    this.loadingProducts = false
                 })
                 .catch(() => { })
         },
@@ -102,7 +131,20 @@ export default {
                 this.navActiveItems.add(item)
             }
 
-            this.getUsers()
+            // reset pagination
+            this.currPage = 1
+            this.total = 0
+            this.pages = 1
+
+            this.getProducts()
+        },
+        getPreviousPage() {
+            this.currPage--
+            this.getProducts()
+        },
+        getNextPage() {
+            this.currPage++
+            this.getProducts()
         }
     },
     created() {

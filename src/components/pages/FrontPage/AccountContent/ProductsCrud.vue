@@ -2,11 +2,19 @@
     <div class="h-full bg-[#DEE2E6] p-1">
         <div class="bg-[#E9ECEF] border px-2 py-3 rounded-lg shadow-md mb-6">
             <div class="p-2">
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <div
-                        class="flex justify-between items-center md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white">
+                <div class="relative overflow-x-auto shadow-md rounded-lg">
+                    <div class="flex justify-between items-center py-4 bg-white">
                         <h1 class="text-3xl font-semibold text-gray-700 ml-5">Products</h1>
-                        <div class="flex">
+                        <!-- Pagination start  -->
+                        <div class="flex items-center py-2 gap-4 text-md bg-white align-text-bottom">
+                            <font-awesome-icon v-show="this.currPage > 1" icon="fa-solid fa-caret-left"
+                                class="h-6 cursor-pointer duration-300 hover:scale-150" @click="getPreviousPage" />
+                            <div class="select-none">{{ `${this.currPage} of ${this.pages}` }}</div>
+                            <font-awesome-icon v-show="this.currPage < this.pages" icon="fa-solid fa-caret-right"
+                                class="h-6 cursor-pointer duration-300 hover:scale-150" @click="getNextPage" />
+                        </div>
+                        <!-- Pagination end -->
+                        <div class="flex items-center">
                             <button class="bg-[#426d19c9] text-white px-4 py-2 rounded-lg hover:bg-[#416D19] mr-5"
                                 @click="loadModal('save', { owner: {} })">New Product</button>
                             <div class="relative">
@@ -50,7 +58,7 @@
                         <tbody>
                             <!-- Table Rows Iteration -->
                             <tr v-for="product in products" :key="product.id"
-                                class="bg-white border-b hover:bg-gray-100">
+                                class="bg-white border-b-2 hover:bg-gray-100">
                                 <td class="px-6 py-4">
                                     <div class="text-base truncate">{{ product._id }}</div>
                                 </td>
@@ -243,14 +251,25 @@ export default {
             modal: '',
             showSaveModal: false,
             showDeleteModal: false,
+
+            currPage: 1,
+            total: 0,
+            pages: 1
         }
     },
     methods: {
         loadProducts() {
-            axios.get(`${baseApiUrl}/products`)
+
+            axios.get(`${baseApiUrl}/products`, {
+                params: {
+                    // Default perPage in product crud table is 6
+                    perPage: 6,
+                    page: this.currPage
+                }
+            })
                 .then(resp => {
                     // parse product
-                    this.products = resp.data.data.map(product => {
+                    this.products = resp.data.data.products.map(product => {
                         const parsedProduct = { ...product }
 
                         parsedProduct.owner = {
@@ -262,6 +281,11 @@ export default {
 
                         return parsedProduct
                     })
+
+                    this.total = resp.data.data.total
+                    this.currPage = resp.data.data.page
+                    this.pages = Math.ceil(this.total / resp.data.data.perPage)
+
                 })
                 .catch(() => { })
         },
@@ -332,6 +356,14 @@ export default {
         },
         parseMoneyValue(value) {
             return currencyParser(value)
+        },
+        getPreviousPage() {
+            this.currPage--
+            this.loadProducts()
+        },
+        getNextPage() {
+            this.currPage++
+            this.loadProducts()
         }
     },
     created() {

@@ -1,8 +1,10 @@
 <template>
     <div class="front-page">
-        <page-header :userLogged="user !== null"></page-header>
+        <page-header :userLogged="user !== null" :cartProducts="cartProducts"
+            @update:cartProducts="cartProducts = $event"></page-header>
         <Loading v-if="validatingToken" />
-        <router-view v-if="userLoaded"></router-view>
+        <router-view v-if="userLoaded" :userLogged="user !== null" :cartProducts="cartProducts"
+            @update:cartProducts="cartProducts = $event"></router-view>
         <page-footer></page-footer>
     </div>
 </template>
@@ -11,7 +13,7 @@
 import axios from 'axios'
 import { mapState } from "vuex";
 
-import pageHeader from "@/components/template/Header.vue";
+import pageHeader from "@/components/template//Header/Header.vue";
 import pageFooter from "@/components/template/Footer.vue"
 import Loading from "@/components/template/LoadingValidation.vue";
 
@@ -24,7 +26,9 @@ export default {
     data() {
         return {
             validatingToken: false,
-            userLoaded: false
+            userLoaded: false,
+
+            cartProducts: []
         }
     },
     components: {
@@ -86,6 +90,6 @@ export default {
 #app .front-page {
     height: 100%;
     display: grid;
-    grid-template-rows: 140px 750px 340px;
+    grid-template-rows: 80px 750px 340px;
 }
 </style>

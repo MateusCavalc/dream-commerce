@@ -23,16 +23,22 @@
         <section v-else
             class="col-span-6 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-4 mt-7 mb-3 mr-7">
             <!-- Product card -->
-            <div v-for="product in products" :key="product.name"
+            <div v-for="product in products" :key="product._id"
                 class="h-fit bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                <a href="#">
+                <a>
                     <img :src="`http://localhost:4000/${product.image}`" :alt="product.name"
                         class="h-52 object-cover rounded-t-xl" />
-                    <div class="px-4 pt-3 pb-2 ">
-                        <p class="text-lg font-bold text-black truncate block capitalize">{{ product.name }}</p>
-                        <span class="text-gray-400 text-sm mr-3">by {{ product.ownerName }}</span>
-                        <div class="flex justify-between items-end">
-                            <p class="text-lg font-semibold text-black mt-2">{{ product.price }}</p>
+                    <div class="grid grid-cols-4 px-4 pt-3 pb-2 ">
+                        <div class="col-span-3 flex flex-col select-none">
+                            <p class="text-lg font-bold text-black truncate block capitalize">{{ product.name }}</p>
+                            <span class="text-gray-400 text-sm">by {{ product.ownerName }}</span>
+                        </div>
+                        <div v-if="userLogged" class="col-span-1 flex justify-end items-center text-3xl">
+                            <font-awesome-icon class="cursor-pointer p-2" @click="addProductToCart({ ...product })"
+                                icon="fa-solid fa-cart-plus"></font-awesome-icon>
+                        </div>
+                        <div class="col-span-4 flex justify-between items-end select-none">
+                            <p class="text-lg font-semibold text-black mt-2">{{ parsePrice(product.price) }}</p>
                             <span class="text-gray-400 text-sm">{{ product.categories.join(', ') }}</span>
                         </div>
                     </div>
@@ -59,6 +65,7 @@ import ContentNavItem from './ContentNavItem.vue';
 import Loading from '@/components/template/LoadingValidation.vue'
 
 import axios from 'axios'
+
 import currencyParser from '@/utils/currencyParser';
 
 const baseApiUrl = process.env.VUE_APP_API_URL;
@@ -70,6 +77,10 @@ export default {
         ContentNavItem,
         Loading
     },
+    props: {
+        userLogged: Boolean,
+        cartProducts: Array
+    },
     data() {
         return {
             products: [],
@@ -79,7 +90,9 @@ export default {
 
             currPage: 1,
             total: 0,
-            pages: 1
+            pages: 1,
+
+            contentCartProducts: this.cartProducts
         }
     },
     methods: {
@@ -97,7 +110,6 @@ export default {
                 .then(resp => {
                     this.products = resp.data.data.products.map(product => {
                         const parsedProduct = { ...product }
-                        parsedProduct.price = product.price ? currencyParser(parsedProduct.price) : 'Free'
                         parsedProduct.ownerName = this.users.get(parseInt(parsedProduct.ownerId))
                         delete parsedProduct.ownerId
 
@@ -145,6 +157,13 @@ export default {
         getNextPage() {
             this.currPage++
             this.getProducts()
+        },
+        addProductToCart(product) {
+            this.contentCartProducts.push(product)
+            this.$emit('update:cartProducts', this.contentCartProducts)
+        },
+        parsePrice(price) {
+            return currencyParser(price) ?? 'Free'
         }
     },
     created() {

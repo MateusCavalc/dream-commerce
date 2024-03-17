@@ -12,7 +12,7 @@ This is a personal project that implements the frontend of a e-commerce called '
 <img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/cart.png" alt="cart" width="48%"/>
 </p>
 <p align='middle'>
-<img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/frontpage-filter1.png" alt="frontpage-filter1" width="48%"/>
+<img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/frontpage-filter.png" alt="frontpage-filter1" width="48%"/>
 <img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/frontpage-filter2.png" alt="frontpage-filter2" width="48%"/>
 </p>
 <p align='middle'>

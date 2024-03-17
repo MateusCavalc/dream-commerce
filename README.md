@@ -3,7 +3,10 @@
 This is a personal project that implements the frontend of a e-commerce called 'Dream Commerce'. 
 
 ## Demo
-<img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/signin.png" alt="signin" width="30%"/> <img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/frontpage.png" alt="frontpage" width="30%"/> 
+<p align='middle'>
+<img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/signin.png" alt="signin" width="43%"/>
+<img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/frontpage.png" alt="frontpage" width="43%"/> 
+</p>
 <img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/frontpage2.png" alt="frontpage2" width="50%"/>
 <img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/cart.png" alt="cart" width="50%"/>
 <img src="https://github.com/MateusCavalc/dream-commerce/blob/main/images/frontpage-filter1.png" alt="frontpage-filter1" width="50%"/>
